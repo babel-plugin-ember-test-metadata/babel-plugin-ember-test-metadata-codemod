@@ -1,6 +1,10 @@
 {
   "name": "babel-plugin-ember-test-metadata-codemod",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata-codemod.git"
+  },
   "scripts": {
     "lint": "eslint --cache .",
     "test": "codemod-cli test",
