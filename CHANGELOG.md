@@ -1,4 +1,14 @@
 
+
+## v0.2.1 (2021-11-04)
+
+#### :house: Internal
+* [#4](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata-codemod/pull/4) add license ([@zhanwang626](https://github.com/zhanwang626))
+
+#### Committers: 1
+- Zhan Wang ([@zhanwang626](https://github.com/zhanwang626))
+
+
 ## v0.2.0 (2021-11-04)
 
 #### :rocket: Enhancement
