@@ -8,6 +8,7 @@
     "type": "git",
     "url": "git@github.com:babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata-codemod.git"
   },
+  "license": "MIT",
   "bin": "./bin/cli.js",
   "scripts": {
     "lint": "eslint --cache .",
