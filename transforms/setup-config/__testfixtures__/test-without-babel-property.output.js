@@ -15,11 +15,11 @@ module.exports = function (defaults) {
     },
 
     babel: {
-      plugins: [require.resolve('babel-plugin-ember-test-metadata'), {
+      plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
         enabled: !!process.env.BABEL_TEST_METADATA,
         packageName: defaults.project.pkg.name,
         isUsingEmbroider: !!process.env.EMBROIDER,
-      }],
+      }]],
     },
   });
 
