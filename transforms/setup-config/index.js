@@ -64,7 +64,7 @@ module.exports = function transformer(file, api) {
   let pluginsObject = j.property(
     'init',
     j.identifier('plugins'),
-    j.arrayExpression([requireCallExpression, optionObject])
+    j.arrayExpression([j.arrayExpression([requireCallExpression, optionObject])])
   );
 
   let babelObject = j.property('init', j.identifier('babel'), j.objectExpression([pluginsObject]));
@@ -126,7 +126,9 @@ module.exports = function transformer(file, api) {
           let properties = path.node.properties;
           properties.forEach((property) => {
             if (property.key.name === 'plugins' && property.value.type === 'ArrayExpression') {
-              property.value.elements.push(requireCallExpression, optionObject);
+              property.value.elements.push(
+                j.arrayExpression([requireCallExpression, optionObject])
+              );
             }
           });
         });
