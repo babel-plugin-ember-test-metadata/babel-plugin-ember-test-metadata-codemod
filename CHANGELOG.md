@@ -1,5 +1,18 @@
 
 
+
+## v0.2.2 (2021-11-17)
+
+#### :bug: Bug Fix
+* [#5](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata-codemod/pull/5) Fix missing square brackets in plugin properties ([@zhanwang626](https://github.com/zhanwang626))
+
+#### :house: Internal
+* [#4](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata-codemod/pull/4) add license ([@zhanwang626](https://github.com/zhanwang626))
+
+#### Committers: 1
+- Zhan Wang ([@zhanwang626](https://github.com/zhanwang626))
+
+
 ## v0.2.1 (2021-11-04)
 
 #### :house: Internal
