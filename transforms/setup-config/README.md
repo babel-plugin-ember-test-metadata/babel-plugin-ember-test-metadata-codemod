@@ -20,12 +20,73 @@ node ./bin/cli.js setup-config path/of/files/ or/some**/*glob.js
 ## Input / Output
 
 <!--FIXTURES_TOC_START-->
+* [test-already-setup](#test-already-setup)
 * [test-with-babel-property](#test-with-babel-property)
 * [test-with-plugin-property](#test-with-plugin-property)
 * [test-without-babel-property](#test-without-babel-property)
 <!--FIXTURES_TOC_END-->
 
 <!--FIXTURES_CONTENT_START-->
+---
+<a id="test-already-setup">**test-already-setup**</a>
+
+**Input** (<small>[test-already-setup.input.js](transforms/setup-config/__testfixtures__/test-already-setup.input.js)</small>):
+```js
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    babel: {
+      plugins: [
+        [
+          require.resolve('babel-plugin-ember-test-metadata'),
+          {
+            enabled: !!process.env.BABEL_TEST_METADATA,
+            packageName: defaults.project.pkg.name,
+            isUsingEmbroider: true,
+          },
+        ],
+      ],
+    },
+  });
+
+  // additional configuration
+
+  return app.toTree();
+};
+
+```
+
+**Output** (<small>[test-already-setup.output.js](transforms/setup-config/__testfixtures__/test-already-setup.output.js)</small>):
+```js
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    babel: {
+      plugins: [
+        [
+          require.resolve('babel-plugin-ember-test-metadata'),
+          {
+            enabled: !!process.env.BABEL_TEST_METADATA,
+            packageName: defaults.project.pkg.name,
+            isUsingEmbroider: true,
+          },
+        ],
+      ],
+    },
+  });
+
+  // additional configuration
+
+  return app.toTree();
+};
+
+```
 ---
 <a id="test-with-babel-property">**test-with-babel-property**</a>
 
@@ -55,6 +116,7 @@ module.exports = function (defaults) {
 
   return app.toTree();
 };
+
 ```
 
 **Output** (<small>[test-with-babel-property.output.js](transforms/setup-config/__testfixtures__/test-with-babel-property.output.js)</small>):
@@ -77,11 +139,11 @@ module.exports = function (defaults) {
     babel: {
       'ember-cli-pemberly-i18n': i18nConfig,
 
-      plugins: [require.resolve('babel-plugin-ember-test-metadata'), {
+      plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
         enabled: !!process.env.BABEL_TEST_METADATA,
         packageName: defaults.project.pkg.name,
         isUsingEmbroider: !!process.env.EMBROIDER,
-      }],
+      }]],
     },
   });
 
@@ -89,6 +151,7 @@ module.exports = function (defaults) {
 
   return app.toTree();
 };
+
 ```
 ---
 <a id="test-with-plugin-property">**test-with-plugin-property**</a>
@@ -110,6 +173,7 @@ module.exports = function (defaults) {
 
   return app.toTree();
 };
+
 ```
 
 **Output** (<small>[test-with-plugin-property.output.js](transforms/setup-config/__testfixtures__/test-with-plugin-property.output.js)</small>):
@@ -121,11 +185,11 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     babel: {
-      plugins: [require.resolve('babel-plugin-ember-test-metadata'), {
+      plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
         enabled: !!process.env.BABEL_TEST_METADATA,
         packageName: defaults.project.pkg.name,
         isUsingEmbroider: !!process.env.EMBROIDER,
-      }],
+      }]],
     },
   });
 
@@ -133,6 +197,7 @@ module.exports = function (defaults) {
 
   return app.toTree();
 };
+
 ```
 ---
 <a id="test-without-babel-property">**test-without-babel-property**</a>
@@ -159,6 +224,7 @@ module.exports = function (defaults) {
 
   return app.toTree();
 };
+
 ```
 
 **Output** (<small>[test-without-babel-property.output.js](transforms/setup-config/__testfixtures__/test-without-babel-property.output.js)</small>):
@@ -180,11 +246,11 @@ module.exports = function (defaults) {
     },
 
     babel: {
-      plugins: [require.resolve('babel-plugin-ember-test-metadata'), {
+      plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
         enabled: !!process.env.BABEL_TEST_METADATA,
         packageName: defaults.project.pkg.name,
         isUsingEmbroider: !!process.env.EMBROIDER,
-      }],
+      }]],
     },
   });
 
@@ -192,5 +258,6 @@ module.exports = function (defaults) {
 
   return app.toTree();
 };
+
 ```
 <!--FIXTURES_CONTENT_END-->
