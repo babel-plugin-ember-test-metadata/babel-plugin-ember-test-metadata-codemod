@@ -6,6 +6,7 @@ const {
   getCorrectConfig,
   getEnabledProperty,
   getPackageNameProperty,
+  getProjectRootProperty,
   getUsingEmboriderProperty,
   getPluginsObject,
   getBabelObject,
@@ -38,12 +39,14 @@ module.exports = function transformer(file, api) {
 
     let enabledProperty = getEnabledProperty(j);
     let packageNameProperty = getPackageNameProperty(j);
+    let projectRootProperty = getProjectRootProperty(j);
     let isUsingEmbroiderProperty = getUsingEmboriderProperty(j);
 
     let optionObject = j.objectExpression([
       enabledProperty,
       packageNameProperty,
       isUsingEmbroiderProperty,
+      projectRootProperty,
     ]);
 
     let pluginsObject = getPluginsObject(j, optionObject, requireCallExpression);
