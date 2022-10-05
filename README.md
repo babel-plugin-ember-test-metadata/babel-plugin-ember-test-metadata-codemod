@@ -25,7 +25,6 @@ node ./bin/cli.js <TRANSFORM NAME> path/of/files/ or/some**/*glob.js
 
 <!--TRANSFORMS_START-->
 * [setup-config](transforms/setup-config/README.md)
-* [setup-config-with-in-repo-addons](transforms/setup-config-with-in-repo-addons/README.md)
 * [setup-config-with-workspaces](transforms/setup-config-with-workspaces/README.md)
 <!--TRANSFORMS_END-->
 
