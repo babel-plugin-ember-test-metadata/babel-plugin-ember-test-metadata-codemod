@@ -11,6 +11,14 @@ module.exports = function (defaults) {
       includeHighCharts3D: true,
       includeModules: ['solid-gauge'],
     },
+
+    babel: {
+      plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
+        enabled: !!process.env.BABEL_TEST_METADATA,
+        packageName: defaults.project.pkg.name,
+        isUsingEmbroider: !!process.env.EMBROIDER,
+      }]],
+    },
   });
 
   // additional configuration

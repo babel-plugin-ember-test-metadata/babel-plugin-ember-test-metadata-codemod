@@ -35,7 +35,6 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
-    'ember-cli-pemberly-i18n': i18nConfig,
     emberHighCharts: {
       includeHighCharts: true,
       includeHighStock: false,
@@ -60,8 +59,6 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
-    'ember-cli-pemberly-i18n': i18nConfig,
-
     emberHighCharts: {
       includeHighCharts: true,
       includeHighStock: false,
