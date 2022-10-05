@@ -11,7 +11,7 @@ module.exports = function (defaults) {
           {
             enabled: !!process.env.BABEL_TEST_METADATA,
             packageName: defaults.project.pkg.name,
-            isUsingEmbroider: true,
+            isUsingEmbroider: !!process.env.EMBROIDER,
           },
         ],
       ],

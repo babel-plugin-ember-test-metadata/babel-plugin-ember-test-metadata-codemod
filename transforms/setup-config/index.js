@@ -1,8 +1,9 @@
 const { getParser } = require('codemod-cli').jscodeshift;
 const {
+  hasBabelPluginEmberTestMetaData,
   addBabelProperty,
   addPluginsProperty,
-  addOptionObject,
+  addBabelPluginConfig,
   getCorrectConfig,
   getEnabledProperty,
   getPackageNameProperty,
@@ -25,8 +26,6 @@ module.exports = function transformer(file, api) {
   ]);
 
   function transform() {
-    let correctConfig = getCorrectConfig(j, root);
-
     let emberApp = root.find(j.NewExpression, {
       callee: {
         name: 'EmberApp',
@@ -36,9 +35,12 @@ module.exports = function transformer(file, api) {
     let hasBabelProperty = false;
     let hasPluginsProperty = false;
 
+    let correctConfig = getCorrectConfig(j, emberApp);
     let enabledProperty = getEnabledProperty(j);
     let packageNameProperty = getPackageNameProperty(j);
     let isUsingEmbroiderProperty = getUsingEmboriderProperty(j);
+
+    let hasCorrectBabelPluginEmberTestMetaData = hasBabelPluginEmberTestMetaData(j, emberApp);
 
     let optionObject = j.objectExpression([
       enabledProperty,
@@ -48,6 +50,8 @@ module.exports = function transformer(file, api) {
 
     let pluginsObject = getPluginsObject(j, optionObject, requireCallExpression);
     let babelObject = getBabelObject(j, pluginsObject);
+
+    let babelPluginConfig = [requireCallExpression, optionObject];
 
     emberApp.find(j.ObjectExpression).forEach((path) => {
       let properties = path.node.properties;
@@ -62,13 +66,18 @@ module.exports = function transformer(file, api) {
       });
     });
 
-    if (emberApp.length > 0 && correctConfig.length === 0) {
+    if (correctConfig.length === 0) {
       if (!hasBabelProperty) {
         addBabelProperty(j, emberApp, babelObject);
       } else if (hasBabelProperty && !hasPluginsProperty) {
         addPluginsProperty(j, emberApp, pluginsObject);
       } else if (hasBabelProperty && hasPluginsProperty) {
-        addOptionObject(j, emberApp, requireCallExpression, optionObject);
+        addBabelPluginConfig(
+          j,
+          emberApp,
+          hasCorrectBabelPluginEmberTestMetaData,
+          babelPluginConfig
+        );
       }
     }
   }

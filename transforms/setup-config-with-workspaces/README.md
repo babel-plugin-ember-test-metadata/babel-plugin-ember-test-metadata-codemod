@@ -21,6 +21,7 @@ node ./bin/cli.js setup-config-with-workspaces path/of/files/ or/some**/*glob.js
 
 <!--FIXTURES_TOC_START-->
 * [basic](#basic)
+* [miss-project-root-property](#miss-project-root-property)
 <!--FIXTURES_TOC_END-->
 
 <!--FIXTURES_CONTENT_START-->
@@ -52,6 +53,73 @@ module.exports = function (defaults) {
 ```
 
 **Output** (<small>[basic.output.js](transforms/setup-config-with-workspaces/__testfixtures__/basic.output.js)</small>):
+```js
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    emberHighCharts: {
+      includeHighCharts: true,
+      includeHighStock: false,
+      includeHighChartsMore: true,
+      includeHighCharts3D: true,
+      includeModules: ['solid-gauge'],
+    },
+
+    babel: {
+      plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
+        enabled: !!process.env.BABEL_TEST_METADATA,
+        packageName: defaults.project.pkg.name,
+        isUsingEmbroider: !!process.env.EMBROIDER,
+        projectRoot: '../..',
+      }]],
+    },
+  });
+
+  // additional configuration
+
+  return app.toTree();
+};
+
+```
+---
+<a id="miss-project-root-property">**miss-project-root-property**</a>
+
+**Input** (<small>[miss-project-root-property.input.js](transforms/setup-config-with-workspaces/__testfixtures__/miss-project-root-property.input.js)</small>):
+```js
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    emberHighCharts: {
+      includeHighCharts: true,
+      includeHighStock: false,
+      includeHighChartsMore: true,
+      includeHighCharts3D: true,
+      includeModules: ['solid-gauge'],
+    },
+
+    babel: {
+      plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
+        enabled: !!process.env.BABEL_TEST_METADATA,
+        packageName: defaults.project.pkg.name,
+        isUsingEmbroider: !!process.env.EMBROIDER,
+      }]],
+    },
+  });
+
+  // additional configuration
+
+  return app.toTree();
+};
+
+```
+
+**Output** (<small>[miss-project-root-property.output.js](transforms/setup-config-with-workspaces/__testfixtures__/miss-project-root-property.output.js)</small>):
 ```js
 'use strict';
 

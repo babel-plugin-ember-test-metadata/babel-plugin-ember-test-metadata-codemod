@@ -1,3 +1,23 @@
+function hasBabelPluginEmberTestMetaData(j, emberApp) {
+  let callExpression = emberApp.find(j.CallExpression, {
+    callee: {
+      object: {
+        name: 'require',
+      },
+      property: {
+        name: 'resolve',
+      },
+    },
+    arguments: [
+      {
+        value: 'babel-plugin-ember-test-metadata',
+      },
+    ],
+  });
+
+  return callExpression.length !== 0;
+}
+
 function addBabelProperty(j, emberApp, babelObject) {
   emberApp.find(j.ObjectExpression).forEach((path) => {
     if (path.parent.node.callee && path.parent.node.callee.name === 'EmberApp') {
@@ -14,15 +34,42 @@ function addPluginsProperty(j, emberApp, pluginsObject) {
   });
 }
 
-function addOptionObject(j, emberApp, requireCallExpression, optionObject) {
-  emberApp.find(j.ObjectExpression).forEach((path) => {
-    let properties = path.node.properties;
-    properties.forEach((property) => {
-      if (property.key.name === 'plugins' && property.value.type === 'ArrayExpression') {
-        property.value.elements.push(j.arrayExpression([requireCallExpression, optionObject]));
-      }
+function addBabelPluginConfig(
+  j,
+  emberApp,
+  hasCorrectBabelPluginEmberTestMetaData,
+  babelPluginConfig
+) {
+  if (hasCorrectBabelPluginEmberTestMetaData) {
+    emberApp
+      .find(j.CallExpression, {
+        callee: {
+          object: {
+            name: 'require',
+          },
+          property: {
+            name: 'resolve',
+          },
+        },
+        arguments: [
+          {
+            value: 'babel-plugin-ember-test-metadata',
+          },
+        ],
+      })
+      .forEach((path) => {
+        path.parent.node.elements = babelPluginConfig;
+      });
+  } else {
+    emberApp.find(j.ObjectExpression).forEach((path) => {
+      let properties = path.node.properties;
+      properties.forEach((property) => {
+        if (property.key.name === 'plugins' && property.value.type === 'ArrayExpression') {
+          property.value.elements.push(j.arrayExpression(babelPluginConfig));
+        }
+      });
     });
-  });
+  }
 }
 
 function getEnabledProperty(j) {
@@ -77,19 +124,203 @@ function getUsingEmboriderProperty(j) {
   );
 }
 
-function getCorrectConfig(j, root) {
-  return root.find(j.ArrayExpression).find(j.CallExpression, {
-    callee: {
-      object: {
-        name: 'require',
-      },
-      property: {
-        name: 'resolve',
-      },
-    },
-    arguments: [
+function getCorrectProjectWithWorkspacesConfig(j, emberApp) {
+  return emberApp.find(j.ArrayExpression, {
+    elements: [
       {
-        value: 'babel-plugin-ember-test-metadata',
+        callee: {
+          object: {
+            name: 'require',
+          },
+          property: {
+            name: 'resolve',
+          },
+        },
+        arguments: [
+          {
+            value: 'babel-plugin-ember-test-metadata',
+          },
+        ],
+      },
+      {
+        properties: [
+          {
+            key: {
+              name: 'enabled',
+            },
+            value: {
+              operator: '!',
+              argument: {
+                operator: '!',
+                argument: {
+                  object: {
+                    object: {
+                      name: 'process',
+                    },
+                    property: {
+                      name: 'env',
+                    },
+                  },
+                  property: {
+                    name: 'BABEL_TEST_METADATA',
+                  },
+                },
+              },
+            },
+          },
+          {
+            key: {
+              name: 'packageName',
+            },
+            value: {
+              property: {
+                name: 'name',
+              },
+              object: {
+                property: {
+                  name: 'pkg',
+                },
+                object: {
+                  property: {
+                    name: 'project',
+                  },
+                  object: {
+                    name: 'defaults',
+                  },
+                },
+              },
+            },
+          },
+          {
+            key: {
+              name: 'isUsingEmbroider',
+            },
+            value: {
+              operator: '!',
+              argument: {
+                operator: '!',
+                argument: {
+                  object: {
+                    object: {
+                      name: 'process',
+                    },
+                    property: {
+                      name: 'env',
+                    },
+                  },
+                  property: {
+                    name: 'EMBROIDER',
+                  },
+                },
+              },
+            },
+          },
+          {
+            key: {
+              name: 'projectRoot',
+            },
+            value: {
+              value: '../..',
+            },
+          },
+        ],
+      },
+    ],
+  });
+}
+
+function getCorrectConfig(j, emberApp) {
+  return emberApp.find(j.ArrayExpression, {
+    elements: [
+      {
+        callee: {
+          object: {
+            name: 'require',
+          },
+          property: {
+            name: 'resolve',
+          },
+        },
+        arguments: [
+          {
+            value: 'babel-plugin-ember-test-metadata',
+          },
+        ],
+      },
+      {
+        properties: [
+          {
+            key: {
+              name: 'enabled',
+            },
+            value: {
+              operator: '!',
+              argument: {
+                operator: '!',
+                argument: {
+                  object: {
+                    object: {
+                      name: 'process',
+                    },
+                    property: {
+                      name: 'env',
+                    },
+                  },
+                  property: {
+                    name: 'BABEL_TEST_METADATA',
+                  },
+                },
+              },
+            },
+          },
+          {
+            key: {
+              name: 'packageName',
+            },
+            value: {
+              property: {
+                name: 'name',
+              },
+              object: {
+                property: {
+                  name: 'pkg',
+                },
+                object: {
+                  property: {
+                    name: 'project',
+                  },
+                  object: {
+                    name: 'defaults',
+                  },
+                },
+              },
+            },
+          },
+          {
+            key: {
+              name: 'isUsingEmbroider',
+            },
+            value: {
+              operator: '!',
+              argument: {
+                operator: '!',
+                argument: {
+                  object: {
+                    object: {
+                      name: 'process',
+                    },
+                    property: {
+                      name: 'env',
+                    },
+                  },
+                  property: {
+                    name: 'EMBROIDER',
+                  },
+                },
+              },
+            },
+          },
+        ],
       },
     ],
   });
@@ -108,10 +339,12 @@ function getBabelObject(j, pluginsObject) {
 }
 
 module.exports = {
+  hasBabelPluginEmberTestMetaData,
   addBabelProperty,
   addPluginsProperty,
-  addOptionObject,
+  addBabelPluginConfig,
   getCorrectConfig,
+  getCorrectProjectWithWorkspacesConfig,
   getEnabledProperty,
   getPackageNameProperty,
   getProjectRootProperty,
