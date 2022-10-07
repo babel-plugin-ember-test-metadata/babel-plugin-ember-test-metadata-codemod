@@ -1,5 +1,42 @@
-function hasBabelPluginEmberTestMetaData(j, emberApp) {
-  let callExpression = emberApp.find(j.CallExpression, {
+const { CONFIGURATION_TYPE } = require('./constants');
+
+function determineConfigType(j, root) {
+  let configurationType;
+  let optionsName = undefined;
+
+  root
+    .find(j.NewExpression, {
+      callee: {
+        name: 'EmberApp',
+      },
+      arguments: [
+        {
+          type: 'Identifier',
+          name: 'defaults',
+        },
+        {
+          type: 'Identifier',
+        },
+      ],
+    })
+    .forEach((path) => {
+      optionsName = path.node.arguments[1].name;
+    });
+
+  if (optionsName === undefined) {
+    configurationType = CONFIGURATION_TYPE.INLINE;
+  } else {
+    configurationType = CONFIGURATION_TYPE.USE_OPTIONS;
+  }
+
+  return {
+    configurationType,
+    optionsName,
+  };
+}
+
+function hasBabelPluginEmberTestMetaData(j, root) {
+  let callExpression = root.find(j.CallExpression, {
     callee: {
       object: {
         name: 'require',
@@ -18,30 +55,35 @@ function hasBabelPluginEmberTestMetaData(j, emberApp) {
   return callExpression.length !== 0;
 }
 
-function addBabelProperty(j, emberApp, babelObject) {
-  emberApp.find(j.ObjectExpression).forEach((path) => {
-    if (path.parent.node.callee && path.parent.node.callee.name === 'EmberApp') {
-      path.node.properties.push(babelObject);
-    }
-  });
+function addBabelProperty(j, root, babelObject, { configurationType, optionsName }) {
+  if (configurationType === CONFIGURATION_TYPE.INLINE) {
+    root.find(j.ObjectExpression).forEach((path) => {
+      if (path.parent.node.callee && path.parent.node.callee.name === 'EmberApp') {
+        path.node.properties.push(babelObject);
+      }
+    });
+  } else {
+    root.find(j.VariableDeclarator).forEach((path) => {
+      let node = path.node;
+
+      if (node.id.name === optionsName && node.init.type === 'ObjectExpression') {
+        node.init.properties.push(babelObject);
+      }
+    });
+  }
 }
 
-function addPluginsProperty(j, emberApp, pluginsObject) {
-  emberApp.find(j.ObjectExpression).forEach((path) => {
+function addPluginsProperty(j, root, pluginsObject) {
+  root.find(j.ObjectExpression).forEach((path) => {
     if (path.parent.node.key && path.parent.node.key.name === 'babel') {
       path.node.properties.push(pluginsObject);
     }
   });
 }
 
-function addBabelPluginConfig(
-  j,
-  emberApp,
-  hasCorrectBabelPluginEmberTestMetaData,
-  babelPluginConfig
-) {
+function addBabelPluginConfig(j, root, hasCorrectBabelPluginEmberTestMetaData, babelPluginConfig) {
   if (hasCorrectBabelPluginEmberTestMetaData) {
-    emberApp
+    root
       .find(j.CallExpression, {
         callee: {
           object: {
@@ -61,7 +103,7 @@ function addBabelPluginConfig(
         path.parent.node.elements = babelPluginConfig;
       });
   } else {
-    emberApp.find(j.ObjectExpression).forEach((path) => {
+    root.find(j.ObjectExpression).forEach((path) => {
       let properties = path.node.properties;
       properties.forEach((property) => {
         if (property.key.name === 'plugins' && property.value.type === 'ArrayExpression') {
@@ -124,8 +166,8 @@ function getUsingEmboriderProperty(j) {
   );
 }
 
-function getCorrectProjectWithWorkspacesConfig(j, emberApp) {
-  return emberApp.find(j.ArrayExpression, {
+function getCorrectProjectWithWorkspacesConfig(j, root) {
+  return root.find(j.ArrayExpression, {
     elements: [
       {
         callee: {
@@ -229,8 +271,8 @@ function getCorrectProjectWithWorkspacesConfig(j, emberApp) {
   });
 }
 
-function getCorrectConfig(j, emberApp) {
-  return emberApp.find(j.ArrayExpression, {
+function getCorrectConfig(j, root) {
+  return root.find(j.ArrayExpression, {
     elements: [
       {
         callee: {
@@ -339,6 +381,7 @@ function getBabelObject(j, pluginsObject) {
 }
 
 module.exports = {
+  determineConfigType,
   hasBabelPluginEmberTestMetaData,
   addBabelProperty,
   addPluginsProperty,

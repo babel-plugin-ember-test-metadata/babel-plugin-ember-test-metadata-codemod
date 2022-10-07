@@ -13,7 +13,9 @@ module.exports = function (defaults) {
     },
 
     babel: {
-
+      plugins: [
+        ...codeCoverage.buildBabelPlugin()
+      ],
     },
   });
 

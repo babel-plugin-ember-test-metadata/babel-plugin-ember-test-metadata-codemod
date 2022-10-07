@@ -3,7 +3,7 @@
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
-  let app = new EmberApp(defaults, {
+  const options = {
     emberHighCharts: {
       includeHighCharts: true,
       includeHighStock: false,
@@ -11,11 +11,9 @@ module.exports = function (defaults) {
       includeHighCharts3D: true,
       includeModules: ['solid-gauge'],
     },
+  }
 
-    babel: {
-
-    },
-  });
+  let app = new EmberApp(defaults, options);
 
   // additional configuration
 

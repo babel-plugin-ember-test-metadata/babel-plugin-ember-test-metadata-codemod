@@ -4,7 +4,6 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
-    'ember-cli-pemberly-i18n': i18nConfig,
     emberHighCharts: {
       includeHighCharts: true,
       includeHighStock: false,
@@ -14,8 +13,6 @@ module.exports = function (defaults) {
     },
 
     babel: {
-      'ember-cli-pemberly-i18n': i18nConfig,
-
       plugins: [[require.resolve('babel-plugin-ember-test-metadata'), {
         enabled: !!process.env.BABEL_TEST_METADATA,
         packageName: defaults.project.pkg.name,

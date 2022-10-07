@@ -1,5 +1,6 @@
 const { getParser } = require('codemod-cli').jscodeshift;
 const {
+  determineConfigType,
   hasBabelPluginEmberTestMetaData,
   addBabelProperty,
   addPluginsProperty,
@@ -27,22 +28,17 @@ module.exports = function transformer(file, api) {
   ]);
 
   function transform() {
-    let emberApp = root.find(j.NewExpression, {
-      callee: {
-        name: 'EmberApp',
-      },
-    });
-
     let hasBabelProperty = false;
     let hasPluginsProperty = false;
 
-    let correctConfig = getCorrectProjectWithWorkspacesConfig(j, emberApp);
+    let { configurationType, optionsName } = determineConfigType(j, root);
+    let correctConfig = getCorrectProjectWithWorkspacesConfig(j, root);
     let enabledProperty = getEnabledProperty(j);
     let packageNameProperty = getPackageNameProperty(j);
     let projectRootProperty = getProjectRootProperty(j);
     let isUsingEmbroiderProperty = getUsingEmboriderProperty(j);
 
-    let hasCorrectBabelPluginEmberTestMetaData = hasBabelPluginEmberTestMetaData(j, emberApp);
+    let hasCorrectBabelPluginEmberTestMetaData = hasBabelPluginEmberTestMetaData(j, root);
 
     let optionObject = j.objectExpression([
       enabledProperty,
@@ -56,7 +52,7 @@ module.exports = function transformer(file, api) {
 
     let babelPluginConfig = [requireCallExpression, optionObject];
 
-    emberApp.find(j.ObjectExpression).forEach((path) => {
+    root.find(j.ObjectExpression).forEach((path) => {
       let properties = path.node.properties;
 
       properties.forEach((property) => {
@@ -71,16 +67,11 @@ module.exports = function transformer(file, api) {
 
     if (correctConfig.length === 0) {
       if (!hasBabelProperty) {
-        addBabelProperty(j, emberApp, babelObject);
+        addBabelProperty(j, root, babelObject, { configurationType, optionsName });
       } else if (hasBabelProperty && !hasPluginsProperty) {
-        addPluginsProperty(j, emberApp, pluginsObject);
+        addPluginsProperty(j, root, pluginsObject);
       } else if (hasBabelProperty && hasPluginsProperty) {
-        addBabelPluginConfig(
-          j,
-          emberApp,
-          hasCorrectBabelPluginEmberTestMetaData,
-          babelPluginConfig
-        );
+        addBabelPluginConfig(j, root, hasCorrectBabelPluginEmberTestMetaData, babelPluginConfig);
       }
     }
   }
