@@ -12,9 +12,7 @@ module.exports = function (defaults) {
       includeModules: ['solid-gauge'],
     },
 
-    babel: {
-
-    },
+    babel: {},
   });
 
   // additional configuration

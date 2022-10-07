@@ -5,9 +5,10 @@ const {
   addBabelProperty,
   addPluginsProperty,
   addBabelPluginConfig,
-  getCorrectConfig,
+  getCorrectProjectWithWorkspacesConfig,
   getEnabledProperty,
   getPackageNameProperty,
+  getProjectRootProperty,
   getUsingEmboriderProperty,
   getPluginsObject,
   getBabelObject,
@@ -31,9 +32,10 @@ module.exports = function transformer(file, api) {
     let hasPluginsProperty = false;
 
     let { configurationType, optionsName } = determineConfigType(j, root);
-    let correctConfig = getCorrectConfig(j, root);
+    let correctConfig = getCorrectProjectWithWorkspacesConfig(j, root);
     let enabledProperty = getEnabledProperty(j);
     let packageNameProperty = getPackageNameProperty(j);
+    let projectRootProperty = getProjectRootProperty(j);
     let isUsingEmbroiderProperty = getUsingEmboriderProperty(j);
 
     let hasCorrectBabelPluginEmberTestMetaData = hasBabelPluginEmberTestMetaData(j, root);
@@ -42,6 +44,7 @@ module.exports = function transformer(file, api) {
       enabledProperty,
       packageNameProperty,
       isUsingEmbroiderProperty,
+      projectRootProperty,
     ]);
 
     let pluginsObject = getPluginsObject(j, optionObject, requireCallExpression);
