@@ -23,11 +23,7 @@ function determineConfigType(j, root) {
       optionsName = path.node.arguments[1].name;
     });
 
-  if (optionsName === undefined) {
-    configurationType = CONFIGURATION_TYPE.INLINE;
-  } else {
-    configurationType = CONFIGURATION_TYPE.USE_OPTIONS;
-  }
+  configurationType = CONFIGURATION_TYPE[optionsName === undefined ? 'INLINE' : 'USE_OPTIONS'];
 
   return {
     configurationType,
