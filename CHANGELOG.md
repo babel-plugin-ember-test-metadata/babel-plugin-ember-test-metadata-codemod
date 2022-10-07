@@ -1,6 +1,16 @@
 
 
 
+
+## v1.0.0 (2022-10-07)
+
+#### :rocket: Enhancement
+* [#6](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata-codemod/pull/6) [feat] Add a transform for projects using workspaces ([@zhanwang626](https://github.com/zhanwang626))
+
+#### Committers: 1
+- Zhan Wang ([@zhanwang626](https://github.com/zhanwang626))
+
+
 ## v0.2.2 (2021-11-17)
 
 #### :bug: Bug Fix
