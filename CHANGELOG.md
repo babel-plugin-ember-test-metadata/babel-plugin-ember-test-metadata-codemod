@@ -2,6 +2,16 @@
 
 
 
+
+## v1.1.0 (2023-03-01)
+
+#### :rocket: Enhancement
+* [#7](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata-codemod/pull/7) Update to compatible with ember addon ([@zhanwang626](https://github.com/zhanwang626))
+
+#### Committers: 1
+- Zhan Wang ([@zhanwang626](https://github.com/zhanwang626))
+
+
 ## v1.0.0 (2022-10-07)
 
 #### :rocket: Enhancement
