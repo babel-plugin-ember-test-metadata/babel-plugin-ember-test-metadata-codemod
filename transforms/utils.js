@@ -54,7 +54,7 @@ function hasBabelPluginEmberTestMetaData(j, root) {
 function addBabelProperty(j, root, babelObject, { configurationType, optionsName }) {
   if (configurationType === CONFIGURATION_TYPE.INLINE) {
     root.find(j.ObjectExpression).forEach((path) => {
-      if (path.parent.node.callee && path.parent.node.callee.name === 'EmberApp') {
+      if (path.parent.node.callee && (path.parent.node.callee.name === 'EmberApp' || path.parent.node.callee.name === 'EmberAddon')) {
         path.node.properties.push(babelObject);
       }
     });
